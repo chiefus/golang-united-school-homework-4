@@ -16,7 +16,7 @@ var (
 func StringSum(input string) (output string, err error) {
 	input = strings.TrimSpace(input)
 	input = strings.ReplaceAll(input, " ", "")
-	input_regexp, _ := regexp.Compile("^[+-]\\d+[+-]\\d+")
+	input_regexp, _ := regexp.Compile("^[+-]\\[0-9]+[+-]\\[0-9]+")
 	if len(input) == 0 {
 		return "", fmt.Errorf("empty input: %w", errorEmptyInput)
 	}
