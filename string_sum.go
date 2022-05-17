@@ -2,26 +2,51 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
-//use these errors as appropriate, wrapping them with fmt.Errorf function
 var (
-	// Use when the input is empty, and input is considered empty if the string contains only whitespace
-	errorEmptyInput = errors.New("input is empty")
-	// Use when the expression has number of operands not equal to two
+	errorEmptyInput     = errors.New("input is empty")
 	errorNotTwoOperands = errors.New("expecting two operands, but received more or less")
 )
 
-// Implement a function that computes the sum of two int numbers written as a string
-// For example, having an input string "3+5", it should return output string "8" and nil error
-// Consider cases, when operands are negative ("-3+5" or "-3-5") and when input string contains whitespace (" 3 + 5 ")
-//
-//For the cases, when the input expression is not valid(contains characters, that are not numbers, +, - or whitespace)
-// the function should return an empty string and an appropriate error from strconv package wrapped into your own error
-// with fmt.Errorf function
-//
-// Use the errors defined above as described, again wrapping into fmt.Errorf
-
 func StringSum(input string) (output string, err error) {
-	return "", nil
+	input = strings.TrimSpace(input)
+	input = strings.ReplaceAll(input, " ", "")
+	input_regexp, _ := regexp.Compile("^[+-]\\d+[+-]\\d+")
+	if len(input) == 0 {
+		return "", fmt.Errorf("empty input: %w", errorEmptyInput)
+	}
+
+	if !strings.HasPrefix(input, "-") {
+		input = "+" + input
+	}
+	if input_regexp.MatchString(input) {
+		inputSlice := []rune(input)
+		inputLength := len(inputSlice)
+		sum := 0
+		startIndex := 0
+		endIndex := 0
+		for i := startIndex + 1; i < inputLength; i++ {
+			if inputSlice[i] == '+' || inputSlice[i] == '-' || i == inputLength-1 {
+				endIndex = i
+				if i == inputLength-1 {
+					endIndex = i + 1
+				}
+
+				convertedValue, _ := strconv.Atoi(string(inputSlice[startIndex:endIndex]))
+				sum += convertedValue
+				startIndex = i
+			}
+
+		}
+
+		output = strconv.Itoa(sum)
+		return output, nil
+	}
+
+	return "", fmt.Errorf("wrong input: %w", errorNotTwoOperands)
 }
