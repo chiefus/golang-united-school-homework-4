@@ -16,14 +16,15 @@ var (
 func StringSum(input string) (output string, err error) {
 	input = strings.TrimSpace(input)
 	input = strings.ReplaceAll(input, " ", "")
-	input_regexp, _ := regexp.Compile("^[+-]\\[0-9]+[+-]\\[0-9]+")
+	input_regexp, _ := regexp.Compile("^[+-].+[+-].+")
 	if len(input) == 0 {
 		return "", fmt.Errorf("empty input: %w", errorEmptyInput)
 	}
 
-	if !strings.HasPrefix(input, "-") {
+	if !strings.HasPrefix(input, "-") && !strings.HasPrefix(input, "+") {
 		input = "+" + input
 	}
+
 	if input_regexp.MatchString(input) {
 		inputSlice := []rune(input)
 		inputLength := len(inputSlice)
@@ -37,7 +38,10 @@ func StringSum(input string) (output string, err error) {
 					endIndex = i + 1
 				}
 
-				convertedValue, _ := strconv.Atoi(string(inputSlice[startIndex:endIndex]))
+				convertedValue, err := strconv.Atoi(string(inputSlice[startIndex:endIndex]))
+				if err != nil {
+					return "", fmt.Errorf("conversion error: %w", err)
+				}
 				sum += convertedValue
 				startIndex = i
 			}
