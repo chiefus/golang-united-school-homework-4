@@ -16,16 +16,17 @@ var (
 func StringSum(input string) (output string, err error) {
 	input = strings.TrimSpace(input)
 	input = strings.ReplaceAll(input, " ", "")
-	input_regexp, _ := regexp.Compile("^[+-].+[+-].+")
+	input_regexp, _ := regexp.Compile("^[+-]{0,1}.+[+-].+")
 	if len(input) == 0 {
 		return "", fmt.Errorf("empty input: %w", errorEmptyInput)
 	}
 
-	if !strings.HasPrefix(input, "-") && !strings.HasPrefix(input, "+") {
+	if !(strings.HasPrefix(input, "-") || strings.HasPrefix(input, "+")) {
 		input = "+" + input
 	}
 
 	if input_regexp.MatchString(input) {
+		operandCount := 1
 		inputSlice := []rune(input)
 		inputLength := len(inputSlice)
 		sum := 0
@@ -36,6 +37,11 @@ func StringSum(input string) (output string, err error) {
 				endIndex = i
 				if i == inputLength-1 {
 					endIndex = i + 1
+				}
+				operandCount++
+
+				if operandCount > 2 {
+					return "", fmt.Errorf("wrong input: %w", errorNotTwoOperands)
 				}
 
 				convertedValue, err := strconv.Atoi(string(inputSlice[startIndex:endIndex]))
