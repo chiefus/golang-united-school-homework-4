@@ -50,7 +50,6 @@ func StringSum(input string) (output string, err error) {
 				if operandCount > 2 {
 					return "", fmt.Errorf("wrong input: %w", errorNotTwoOperands)
 				}
-				fmt.Println(string(inputSlice[startIndex:endIndex]))
 				convertedValue, err := strconv.Atoi(string(inputSlice[startIndex:endIndex]))
 				if err != nil {
 					return "", fmt.Errorf("conversion error: %w", err)
